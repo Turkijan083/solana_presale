@@ -34,7 +34,7 @@ export default function Header() {
             </span>
           </div>
         </div>
-        <div className="absolute top-0 flex flex-row items-center h-full right-5">
+        {/* <div className="absolute top-0 flex flex-row items-center h-full right-5">
           <button
             onClick={onWalletConnect}
             className="px-5 py-2 bg-[#d00711] rounded-full text-[#eff3f6] font-inter text-sm font-bold"
@@ -45,7 +45,7 @@ export default function Header() {
                 " ... " +
                 publicKey.toBase58().slice(-6)}
           </button>
-        </div>
+            </div> */}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React from "react";
 import TimerLayout from "@/layout/timer-layout";
 import BuyLayout from "@/layout/buy-layout";
-import StatsLayout from "@/layout/stats-layout";
+// import StatsLayout from "@/layout/stats-layout";
 import usePresale from "@/hooks/usePresale";
 
 export default function Home() {
@@ -89,10 +89,10 @@ export default function Home() {
           </button>
         </div>
         <div className="flex flex-col items-center gap-12 lg:flex-row">
-          <TimerLayout />
+          {/* <TimerLayout /> */}
           <BuyLayout />
         </div>
-        <StatsLayout />
+        {/* <StatsLayout /> */}
       </div>
     </div>
   );

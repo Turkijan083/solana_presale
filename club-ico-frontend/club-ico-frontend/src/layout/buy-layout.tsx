@@ -2,6 +2,9 @@ import { Icon, IconType } from "@/components/icons";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import usePresale from "@/hooks/usePresale";
+import StatsLayout from "@/layout/stats-layout";
+import { useWallet } from "@solana/wallet-adapter-react";
+
 import {
   BUYER_HARDCAP,
   BUYER_SOFTCAP,
@@ -39,11 +42,35 @@ export default function BuyLayout() {
     buyToken(solBalance, solBalance / PRICE_PER_TOKEN);
   };
 
+  const { select , wallets , publicKey, disconnect } = useWallet();
+
+  const onWalletConnect = () => {
+     if ( !publicKey ) {
+        const installedWallets = wallets.filter(
+            (wallet) => wallet.readyState === "Installed"
+        );
+        if ( installedWallets.length <= 0) {
+          toast.warning("Phantom wallet is not installed yet.");
+          return;
+        }
+        select(wallets[0].adapter.name);
+     } else {
+        disconnect();
+     }
+  }
+
   return (
-    <div className="w-full h-[540px] sm:h-96 max-w-[700px] rounded-3xl bg-[#dae3eaa0] px-8 sm:px-12 py-8 flex flex-col gap-3 sm:gap-6">
+    <div className="w-full h-[800px] sm:h-120 max-w-[700px] rounded-3xl bg-[#dae3eaa0] px-8 sm:px-12 py-8 flex flex-col gap-3 sm:gap-6">
       <span className="font-inter font-bold text-[#000000] text-sm sm:text-lg">
-        Please Enter The CLUB Amount
+        Miron Presale Stage
       </span>
+
+      <StatsLayout />
+
+      <span className="font-inter font-bold text-[#000000] text-sm sm:text-lg">
+        Please enter Miron Amount
+      </span>
+
       <div className="flex flex-col items-center gap-2 sm:flex-row">
         <div className="h-32 rounded-[20px] bg-[#e6f1fa] flex flex-col justify-between px-5 py-5 shadow-[0_0_50px_0_#00000010]">
           <div className="font-inter text-sm text-[#000000] flex flex-row items-center justify-between">
@@ -125,6 +152,15 @@ export default function BuyLayout() {
           <Icon type={IconType.LOADING} className="w-14 h-14" />
         )}
       </div>
+      <button
+        onClick = {onWalletConnect}
+        className= "px-5 py-2 bg-[#d00711] rounded-full text-[#eff3f6] font-inter text-sm font-bold" >
+            {!publicKey
+            ? "CONNECT WALLET"
+            : publicKey.toBase58().slice(0, 6) + 
+            " ... " +
+            publicKey.toBase58().slice(-6)}
+        </button>
     </div>
   );
 }
