@@ -5,7 +5,7 @@ export const PRESALE_PROGRAM_PUBKEY = new PublicKey(
 );
 
 export const TOKEN_PUBKEY = new PublicKey(
-  "BUDNS9JNrwjixKLoqhaQHz4x1HspWaDUXYVGRm2kWrf4"
+  "822vbFurBuWk15kLZF8x6ejtqeDNGz6XyTVdo7eHmow1"
 );
 
 export const PRESALE_SEED = "CLUB_PRESALE_SEED";
@@ -13,14 +13,15 @@ export const USER_SEED = "CLUB_USER_SEED";
 export const PRESALE_ID = 1;
 
 export const PRESALE_AUTHORITY = new PublicKey(
-  "FvrR5ZYir5JKRTaGEYJz2tJ9Voe4WWeQZxrW9Jv774AQ"
+  "Ct3SGJLKdVD2SAJP82B6g1hhTumtdVr2GNxsdHtmiNMz"
 );
 
-export const TOKEN_PRESALE_HARDCAP = 4000000000; // token
-export const PRICE_PER_TOKEN = 0.0000002; // sol
+export const TOKEN_PRESALE_HARDCAP = 15000000; // token
+export const PRICE_PER_TOKEN = 0.00038; // sol
+export const PRICE_PER_TOKEN2 = 0.00044; // sol
 
 export const BUYER_SOFTCAP = 0.2; // sol
 export const BUYER_HARDCAP = 50; // sol
-export const BUYER_TOKEN_HARDCAP = 250000000; // token
+export const BUYER_TOKEN_HARDCAP = 3000; // token
 
 export const TOKEN_DECIMAL = 9;

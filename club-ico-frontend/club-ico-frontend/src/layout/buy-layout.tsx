@@ -62,7 +62,7 @@ export default function BuyLayout() {
   return (
     <div className="w-full h-[800px] sm:h-120 max-w-[700px] rounded-3xl bg-[#dae3eaa0] px-8 sm:px-12 py-8 flex flex-col gap-3 sm:gap-6">
       <span className="font-inter font-bold text-[#000000] text-sm sm:text-lg">
-        Miron Presale Stage
+        Miron Presale Stage ( Stage 1 )
       </span>
 
       <StatsLayout />
@@ -114,13 +114,13 @@ export default function BuyLayout() {
             <div className="w-40 h-10 px-2 py-1 flex flex-row items-center justify-between rounded-full bg-[#c1cfd7]">
               <img alt="sol" src="/images/club.png" className="h-full" />
               <span className="font-inter font-bold text-[#000000] text-sm">
-                CLUB
+                MIRON
               </span>
             </div>
           </div>
         </div>
       </div>
-      <div className="flex flex-col items-center font-inter font-normal text-[#000000] text-xs sm:text-sm">
+      {/* <div className="flex flex-col items-center font-inter font-normal text-[#000000] text-xs sm:text-sm">
         <span className="text-center">
           CLUB remaining for your wallet limit:{" "}
           {remainBuyAmount.toLocaleString(undefined, {
@@ -151,7 +151,7 @@ export default function BuyLayout() {
         {transactionPending && (
           <Icon type={IconType.LOADING} className="w-14 h-14" />
         )}
-      </div>
+      </div> */}
       <button
         onClick = {onWalletConnect}
         className= "px-5 py-2 bg-[#d00711] rounded-full text-[#eff3f6] font-inter text-sm font-bold" >
