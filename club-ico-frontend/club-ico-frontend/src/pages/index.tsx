@@ -42,9 +42,14 @@ export default function Home() {
     await withdrawSol();
   };
   return (
-    <div className="flex flex-row justify-center">
-      <div className="w-full max-w-[1440px] px-5 py-9 relative flex flex-col gap-12">
-        <div className="flex flex-row items-center gap-2">
+    <div className="flex flex-col items-center gap-12 lg:flex-row">
+          {/* <TimerLayout /> */}
+          <BuyLayout />
+        </div>
+      // </div>
+    // <div className="flex flex-row justify-center">
+    //   <div className="w-full max-w-[1440px] px-5 py-9 relative flex flex-col gap-12">
+        /* <div className="flex flex-row items-center gap-2">
           <button
             className="px-5 py-2 bg-[#d00711] rounded-full text-[#eff3f6] font-inter text-sm font-bold"
             onClick={onCreatePresale}
@@ -87,13 +92,8 @@ export default function Home() {
           >
             Update Auth
           </button>
-        </div>
-        <div className="flex flex-col items-center gap-12 lg:flex-row">
-          {/* <TimerLayout /> */}
-          <BuyLayout />
-        </div>
-        {/* <StatsLayout /> */}
-      </div>
-    </div>
+        </div> */
+        
+   // </div>
   );
 }

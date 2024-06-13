@@ -14,7 +14,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <WalletConnectProvider>
-        <Header />
+        {/* <Header /> */}
         <Component {...pageProps} />
         <ToastContainer autoClose={3000} draggableDirection="x" />
       </WalletConnectProvider>
