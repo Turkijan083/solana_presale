@@ -60,9 +60,9 @@ export default function BuyLayout() {
   }
 
   return (
-    <div className="w-full h-[800px] sm:h-120 max-w-[700px] rounded-3xl bg-[#dae3eaa0] px-8 sm:px-12 py-8 flex flex-col gap-3 sm:gap-6">
-      <span className="font-inter font-bold text-[#000000] text-sm sm:text-lg text-center">
-        Miron Presale Stage 
+    <div className="w-full h-[800px] sm:h-120 max-w-[700px] rounded-3xl bg-[#dae3eaa0] px-8 sm:px-12 py-8 flex flex-col gap-1 sm:gap-2">
+      <span className="font-inter font-bold text-[#000000] text-3xl sm:text-lg text-center text-gradient-title">
+        Miron Presale 
       </span>
 
       <span className="font-inter font-bold text-[#000000] text-sm sm:text-lg text-center">

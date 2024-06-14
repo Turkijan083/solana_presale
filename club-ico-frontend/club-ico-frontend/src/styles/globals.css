@@ -21,5 +21,11 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #ffffff80;
+  background-color: #13131380;
+}
+
+.text-gradient-title {
+  background: linear-gradient(to right, #25e95f, #ff69b4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
