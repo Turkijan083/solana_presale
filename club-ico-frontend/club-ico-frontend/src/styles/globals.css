@@ -25,7 +25,13 @@ body {
 }
 
 .text-gradient-title {
-  background: linear-gradient(to right, #25e95f, #ff69b4);
+  background: linear-gradient(to right, #1a1a1a, #ff1087);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-stage-title {
+  background: linear-gradient(to right, #ffe6e6, #1f0411);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
