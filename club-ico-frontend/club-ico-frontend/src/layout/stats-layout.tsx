@@ -48,21 +48,21 @@ export default function StatsLayout() {
     <div className="flex flex-col items-center gap-4">
       <span className="text-center font-bold font-inter text-base sm:text-lg text-[#000000]">
         Miron price = {" "}
-        {PRICE_PER_TOKEN.toLocaleString(undefined, {
+        {(price!=null && price * PRICE_PER_TOKEN).toLocaleString(undefined, {
           minimumFractionDigits: 0,
           maximumFractionDigits: 9,
         })}{" "}
-        SOL. {/* Our Minimum Limit Will Be {BUYER_SOFTCAP} SOL And A Max Of{" "}
+        USD. {/* Our Minimum Limit Will Be {BUYER_SOFTCAP} SOL And A Max Of{" "}
         {BUYER_HARDCAP} SOL. See Our Whitepaper For Further Details. */}
       </span>
 
       <span className="text-center font-bold font-inter text-base sm:text-lg text-[#000000]">
         Next stage price = {" "}
-        {PRICE_PER_TOKEN2.toLocaleString(undefined, {
+        {(price!=null && price * PRICE_PER_TOKEN2).toLocaleString(undefined, {
           minimumFractionDigits: 0,
           maximumFractionDigits: 9,
         })}{" "}
-        SOL. {/* Our Minimum Limit Will Be {BUYER_SOFTCAP} SOL And A Max Of{" "}
+        USD. {/* Our Minimum Limit Will Be {BUYER_SOFTCAP} SOL And A Max Of{" "}
         {BUYER_HARDCAP} SOL. See Our Whitepaper For Further Details. */}
       </span>
 
