@@ -14,14 +14,17 @@ import {
   PRESALE_ID,
   PRESALE_PROGRAM_PUBKEY,
   PRESALE_SEED,
-  PRICE_PER_TOKEN,
+  price_data,
   TOKEN_DECIMAL,
   TOKEN_PRESALE_HARDCAP,
   TOKEN_PUBKEY,
   USER_SEED,
+  token_mint_pubkey,
+  token_owner_pubkey,
+  sol_program_pubkey,
 } from "@/constants/constants";
 import { toast } from "react-toastify";
-import { SystemProgram, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { Connection , SystemProgram, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 import { ASSOCIATED_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
 
@@ -62,6 +65,7 @@ export default function usePresale() {
             ],
             program.programId
           );
+          console.log(presale_info.toBase58());
           // @ts-ignore
           const info = await program.account.presaleInfo.fetch(presale_info);
           setStartTime(info.startTime);
@@ -122,7 +126,7 @@ export default function usePresale() {
           BigInt(TOKEN_PRESALE_HARDCAP) * BigInt(10 ** TOKEN_DECIMAL);
         const bigIntBuyerHardcap =
           BigInt(BUYER_TOKEN_HARDCAP) * BigInt(10 ** TOKEN_DECIMAL);
-        const tokenPrice = PRICE_PER_TOKEN * 10 ** TOKEN_DECIMAL;
+        const tokenPrice = price_data.PRICE_PER_TOKEN * 10 ** TOKEN_DECIMAL;
 
         const tx = await program.methods
           .createPresale(
@@ -132,8 +136,8 @@ export default function usePresale() {
             new anchor.BN(bigIntHardcap.toString()), // hardcap
             new anchor.BN(bigIntBuyerHardcap.toString()), // maxTokenAmountPerAddress
             new anchor.BN(tokenPrice), // price per token
-            new anchor.BN(new Date("2024-02-10T12:00:00Z").getTime() / 1000), // start time
-            new anchor.BN(new Date("2024-02-11T12:00:00Z").getTime() / 1000), // end time
+            new anchor.BN(new Date("2024-06-24T07:48:00Z").getTime() / 1000), // start time
+            new anchor.BN(new Date("2024-06-30T06:30:00Z").getTime() / 1000), // end time
             PRESALE_ID // presale id
           )
           .accounts({
@@ -145,7 +149,7 @@ export default function usePresale() {
         toast.success("Successfully created presale.");
         return false;
       } catch (error: any) {
-        console.log(error);
+        console.log("error1: ", error);
         toast.error(error.toString());
         return false;
       } finally {
@@ -155,6 +159,7 @@ export default function usePresale() {
   };
 
   const withdrawSol = async () => {
+    const transferAmount = 1 * LAMPORTS_PER_SOL;
     if (program && publicKey) {
       try {
         setTransactionPending(true);
@@ -167,9 +172,10 @@ export default function usePresale() {
           program.programId
         );
         console.log("HHHHH - presale_info", presale_info.toString());
+
         const tx = await program.methods
-          .withdrawSol(
-            new anchor.BN(50000000000),
+          .withdrawSol( 
+            new anchor.BN(transferAmount),
             PRESALE_ID // presale id
           )
           .accounts({
@@ -182,7 +188,8 @@ export default function usePresale() {
             tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
             associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
           })
-          .rpc();
+          .rpc(
+          );
         toast.success("Successfully withdrawed sol.");
         return false;
       } catch (error: any) {
@@ -212,7 +219,7 @@ export default function usePresale() {
           BigInt(TOKEN_PRESALE_HARDCAP) * BigInt(10 ** TOKEN_DECIMAL);
         const bigIntBuyerHardcap =
           BigInt(BUYER_TOKEN_HARDCAP) * BigInt(10 ** TOKEN_DECIMAL);
-        const tokenPrice = PRICE_PER_TOKEN * 10 ** TOKEN_DECIMAL;
+        const tokenPrice = price_data.PRICE_PER_TOKEN * 10 ** TOKEN_DECIMAL;
 
         const tx = await program.methods
           .updatePresale(
@@ -220,8 +227,11 @@ export default function usePresale() {
             new anchor.BN(tokenPrice), // pricePerToken
             new anchor.BN(10 ** TOKEN_DECIMAL), //softcapAmount
             new anchor.BN(bigIntHardcap), // hardcapAmount
-            new anchor.BN(new Date("2024-02-09T17:12:00Z").getTime() / 1000), // start time
-            new anchor.BN(new Date("2024-02-09T19:00:00Z").getTime() / 1000), // end time
+            new anchor.BN(new Date("2024-06-24T07:48:00Z").getTime() / 1000), // start time
+            new anchor.BN(new Date("2024-06-30T06:30:00Z").getTime() / 1000), // end time
+            
+            //new anchor.BN(new Date("2024-02-09T17:12:00Z").getTime() / 1000), // start time
+            //new anchor.BN(new Date("2024-02-09T19:00:00Z").getTime() / 1000), // end time
             PRESALE_ID // presale id
           )
           .accounts({
@@ -281,6 +291,7 @@ export default function usePresale() {
   };
 
   const depositToken = async () => {
+    console.log("deposit")
     if (program && publicKey) {
       try {
         setTransactionPending(true);
@@ -295,19 +306,23 @@ export default function usePresale() {
 
         const fromAssociatedTokenAccount =
           await anchor.utils.token.associatedAddress({
-            mint: TOKEN_PUBKEY,
+            mint: token_mint_pubkey,
             owner: publicKey,
           });
+          
+        console.log("fromAssociatedtokenAccount: ", fromAssociatedTokenAccount.toString());
 
         const toAssociatedTokenAccount =
           await anchor.utils.token.associatedAddress({
-            mint: TOKEN_PUBKEY,
+            mint: token_mint_pubkey,
             owner: presale_info,
           });
 
+        console.log("toAssociatedTokenAccount: ", toAssociatedTokenAccount.toString());
+
         // Use BigInt for large number calculations
         const depositAmount =
-          BigInt(TOKEN_PRESALE_HARDCAP) * BigInt(10 ** TOKEN_DECIMAL);
+          TOKEN_PRESALE_HARDCAP * (10 ** TOKEN_DECIMAL);
 
         const tx = await program.methods
           .depositToken(
@@ -360,13 +375,16 @@ export default function usePresale() {
           ],
           program.programId
         );
+        console.log(tokenBalance, solBalance)
 
         // Use BigInt for large number calculations
         const bigIntTokenAmount =
-          BigInt(tokenBalance) * BigInt(10 ** TOKEN_DECIMAL);
+          tokenBalance * (10 ** TOKEN_DECIMAL);
 
         const bigIntSolAmount =
-          BigInt(solBalance) * BigInt(10 ** TOKEN_DECIMAL);
+          solBalance * (10 ** TOKEN_DECIMAL);
+
+        console.log(bigIntTokenAmount.toString(), bigIntSolAmount.toString())
 
         const tx = await program.methods
           .buyToken(
@@ -497,7 +515,7 @@ export default function usePresale() {
           });
 
         const bigIntWithdrawAmount =
-          BigInt(4000000000) * BigInt(10 ** TOKEN_DECIMAL);
+          BigInt(100) * BigInt(10 ** TOKEN_DECIMAL);
 
         const tx = await program.methods
           .withdrawToken(

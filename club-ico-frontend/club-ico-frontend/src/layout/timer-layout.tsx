@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Countdown from "react-countdown";
 import usePresale from "@/hooks/usePresale";
+import BuyLayout from "@/layout/buy-layout";
+import StatsLayout from "@/layout/stats-layout";
 
 export default function TimerLayout() {
   const { startTime, endTime } = usePresale();
@@ -35,39 +37,44 @@ export default function TimerLayout() {
   };
 
   return (
-    <div className="w-full h-72 sm:h-96 max-w-[700px] rounded-3xl bg-[#dae3eaa0] px-8 sm:px-12 py-8 flex flex-col gap-3 sm:gap-5">
-      <span className="font-inter font-bold text-[#000000] text-sm sm:text-lg">
-        {Date.now() < startTime * 1000 && "Presale will start in"}
-        {Date.now() >= startTime * 1000 &&
-          Date.now() < endTime * 1000 &&
-          "Presale will end in"}
-        {Date.now() > endTime * 1000 && "Successfully presale has ended!"}
-      </span>
-      <div className="w-full rounded-[20px] bg-[#e6f1fa] py-8 shadow-[0_0_50px_0_#00000010] flex flex-row justify-center">
-        {Date.now() < endTime * 1000 ? (
-          <Countdown
-            date={
-              Date.now() < startTime * 1000 ? startTime * 1000 : endTime * 1000
-            }
-            renderer={renderer}
-          />
-        ) : (
-          <span className="text-3xl font-bold text-[#d00711]">
-            Presale Completed.
-          </span>
-        )}
+    
+    <div className="w-full max-w-[700px] rounded-3xl px-4 sm:px-12 py-4 flex flex-col gap-1 sm:gap-2">
+      <div className= "flex flex-col justify-center bg-[#e6f1fa] shadow-[0_0_50px_0_#00000010] rounded-[20px]">
+        <span className="font-inter font-bold text-[#000000] text-sm sm:text-lg py-1 px-2">
+          {Date.now() < startTime * 1000 && "Presale will start in"}
+          {Date.now() >= startTime * 1000 &&
+            Date.now() < endTime * 1000 &&
+            "Presale will end in"}
+          {Date.now() > endTime * 1000 && "Successfully presale has ended!"}
+        </span>
+        <div className="w-full flex flex-row justify-center">
+          {Date.now() < endTime * 1000 ? (
+            <Countdown
+              date={
+                Date.now() < startTime * 1000 ? startTime * 1000 : endTime * 1000
+              }
+              renderer={renderer}
+            />
+          ) : (
+            <span className="text-3xl font-bold text-[#d00711]">
+              Presale Completed.
+            </span>
+          )}
+        </div>
+          <StatsLayout />
       </div>
-      <div className="flex flex-row items-start justify-between my-5 sm:my-8">
-        <div className="font-inter font-normal text-[#000000] flex flex-col items-start">
+      <div className="flex flex-row items-start justify-between">
+        <div className="font-inter font-normal text-[#000000] flex flex-col items-center">
           <span className="text-xs sm:text-sm">Start Time:</span>
           <span className="text-xs sm:text-base">{startFormattedDate}</span>
         </div>
-        <div className="font-inter font-normal text-[#000000] flex flex-col items-start">
+        <div className="font-inter font-normal text-[#000000] flex flex-col items-center">
           <span className="text-xs sm:text-sm">End Time:</span>
           <span className="text-xs sm:text-base">{endFormattedDate}</span>
         </div>
       </div>
     </div>
+    
   );
 }
 

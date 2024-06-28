@@ -1,16 +1,16 @@
-import React , { useState , useEffect} from "react";
+import React , { useState , useEffect } from "react";
 import {
   BUYER_HARDCAP,
   BUYER_SOFTCAP,
-  PRICE_PER_TOKEN,
-  PRICE_PER_TOKEN2,
+  price_data,
+  TOKEN_PRICE1,
   TOKEN_DECIMAL,
   TOKEN_PRESALE_HARDCAP,
 } from "@/constants/constants";
 import usePresale from "@/hooks/usePresale";
 import axios from 'axios';
 
-const buyerTokenHardcap = BUYER_HARDCAP / PRICE_PER_TOKEN;
+const buyerTokenHardcap = BUYER_HARDCAP / price_data.PRICE_PER_TOKEN;
 
 interface PriceResponse {
   solana: {
@@ -20,7 +20,7 @@ interface PriceResponse {
 
 export default function StatsLayout() {
   const { buyAmount, totalBuyAmount } = usePresale();
-  
+
   const [price, setPrice] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,95 +44,41 @@ export default function StatsLayout() {
     return () => clearInterval(interval); // Clean up the interval on component unmount
   }, []);
 
+  console.log("stress");
+  console.log((totalBuyAmount/(10 ** TOKEN_DECIMAL)).toString());
+  console.log(TOKEN_PRESALE_HARDCAP);
+  console.log(Math.floor(
+    (((totalBuyAmount / (10 ** TOKEN_DECIMAL))) * 100) /
+      TOKEN_PRESALE_HARDCAP));
+
   return (
-    <div className="flex flex-col items-center gap-4">
-      <span className="text-center font-bold font-inter text-base sm:text-lg text-[#000000]">
-        Miron price = {" "}
-        {(price!=null && price * PRICE_PER_TOKEN).toLocaleString(undefined, {
+    <div className="flex flex-col items-center gap-2">
+      {/* <span className="text-center font-bold font-inter text-base sm:text-lg text-[#000000]">
+        With A Presale Price Of{" "}
+        {PRICE_PER_TOKEN.toLocaleString(undefined, {
           minimumFractionDigits: 0,
           maximumFractionDigits: 9,
         })}{" "}
-        USD. {/* Our Minimum Limit Will Be {BUYER_SOFTCAP} SOL And A Max Of{" "}
-        {BUYER_HARDCAP} SOL. See Our Whitepaper For Further Details. */}
-      </span>
-
-      <span className="text-center font-bold font-inter text-base sm:text-lg text-[#000000]">
-        Next stage price = {" "}
-        {(price!=null && price * PRICE_PER_TOKEN2).toLocaleString(undefined, {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 9,
-        })}{" "}
-        USD. {/* Our Minimum Limit Will Be {BUYER_SOFTCAP} SOL And A Max Of{" "}
-        {BUYER_HARDCAP} SOL. See Our Whitepaper For Further Details. */}
-      </span>
-
+        SOL. Our Minimum Limit Will Be {BUYER_SOFTCAP} SOL And A Max Of{" "}
+        {BUYER_HARDCAP} SOL. See Our Whitepaper For Further Details.
+      </span> */}
       <div className="flex flex-col items-center justify-between w-full gap-5 sm:flex-row sm:gap-12">
         <div />
         <ProcessBar
-          label="Presale Amount received"
+          label="Presale Amount Received"
           value={Math.floor(
             ((totalBuyAmount / 10 ** TOKEN_DECIMAL) * 100) /
               TOKEN_PRESALE_HARDCAP
           )}
         />
+        {/* <ProcessBar
+          label="Your Hard Cap Amount"
+          value={Math.floor(
+            ((buyAmount / 10 ** TOKEN_DECIMAL) * 100) / buyerTokenHardcap
+          )}
+        /> */}
         <div />
       </div>
-
-      <span className="text-center font-bold font-inter text-base sm:text-lg text-[#000000]">
-        USDT Raised = {" "}
-        {(price!==null && price * totalBuyAmount * PRICE_PER_TOKEN).toLocaleString(undefined , {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 9,
-        })}{" "}
-        USDT{" "}/{" "}
-        {(price!==null && price * TOKEN_PRESALE_HARDCAP * PRICE_PER_TOKEN).toLocaleString(undefined , {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 9,
-        })}{" "}USDT
-         {/* Our Minimum Limit Will Be {BUYER_SOFTCAP} SOL And A Max Of{" "}
-        {BUYER_HARDCAP} SOL. See Our Whitepaper For Further Details. */}
-      </span>
-
-      <span className="text-center font-bold font-inter text-base sm:text-lg text-[#000000]">
-        SOL Raised = {" "}
-        {(totalBuyAmount * PRICE_PER_TOKEN).toLocaleString(undefined , {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 9,
-        })}{" "}
-        SOL{" "}/{" "}
-        {(TOKEN_PRESALE_HARDCAP * PRICE_PER_TOKEN).toLocaleString(undefined , {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 9,
-        })}{" "}SOL
-         {/* Our Minimum Limit Will Be {BUYER_SOFTCAP} SOL And A Max Of{" "}
-        {BUYER_HARDCAP} SOL. See Our Whitepaper For Further Details. */}
-      </span>
-
-      <span className="text-center font-bold font-inter text-base sm:text-lg text-[#000000]">
-        MIRON Raised = {" "}
-        {(price!==null && price * totalBuyAmount).toLocaleString(undefined , {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 9,
-        })}{" "}
-        MIRON{" "}/{" "}
-        {(price!==null && price * TOKEN_PRESALE_HARDCAP).toLocaleString(undefined , {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 9,
-        })}{" "}MIRON
-         {/* Our Minimum Limit Will Be {BUYER_SOFTCAP} SOL And A Max Of{" "}
-        {BUYER_HARDCAP} SOL. See Our Whitepaper For Further Details. */}
-      </span>
-
-      <span className="text-center font-bold font-inter text-base sm:text-lg text-[#000000]">
-        Next stage price = {" "}
-        {PRICE_PER_TOKEN2.toLocaleString(undefined, {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 9,
-        })}{" "}
-        SOL. {/* Our Minimum Limit Will Be {BUYER_SOFTCAP} SOL And A Max Of{" "}
-        {BUYER_HARDCAP} SOL. See Our Whitepaper For Further Details. */}
-      </span>
-
       <div className="flex flex-col items-center justify-between w-full gap-5 sm:flex-row font-inter">
         <div />
         <div className="flex flex-col items-center sm:items-start">
@@ -144,7 +90,7 @@ export default function StatsLayout() {
               minimumFractionDigits: 0,
               maximumFractionDigits: 2,
             })}{" "}
-            Miron
+            MIRON
           </span>
         </div>
         <div className="flex flex-col items-center sm:items-start">
@@ -156,19 +102,18 @@ export default function StatsLayout() {
               minimumFractionDigits: 0,
               maximumFractionDigits: 2,
             })}{" "}
-            Miron
+            MIRON
           </span>
         </div>
         <div className="flex flex-col items-center sm:items-start">
           <span className="font-normal text-sm text-[#000000]">
-            Miron Price:
+            MIRON Price:
           </span>
           <span className="font-normal text-base text-[#000000]">
-            {PRICE_PER_TOKEN.toLocaleString(undefined, {
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 9,
-            })}{" "}
-            SOL
+            1 MIRON = {(price_data.PRICE_PER_TOKEN*100).toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 4,
+              })}{"¢"}
           </span>
         </div>
         <div />
@@ -201,7 +146,7 @@ const ProcessBar: React.FC<ProcessBarProps> = ({ label, value }) => {
         </div>
         <div />
       </div>
-      <div className="w-full h-5 sm:h-7 rounded-full overflow-hidden bg-gradient-to-r from-[#ff0000] to-[#ffffff]" >
+      <div className="w-full h-5 sm:h-7 rounded-full bg-[#cccccc] overflow-hidden">
         <div
           className="h-full bg-[#d00711]"
           style={{
@@ -210,12 +155,12 @@ const ProcessBar: React.FC<ProcessBarProps> = ({ label, value }) => {
         ></div>
       </div>
       <div
-        className="absolute w-0.5 h-0.5 flex flex-row items-center justify-center top-8"
+        className="absolute w-0.5 h-0.5 flex flex-row items-start justify-center top-8 "
         style={{
           left: `${value}%`,
         }}
       >
-        <div className="min-w-11 min-h-11 rounded-full bg-[#d00711] flex flex-row items-center justify-center" style={{marginTop: '3rem'}}>
+        <div className="min-w-11 min-h-11 rounded-full bg-[#d00711] flex flex-row items-center justify-center text-white bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-pink-300 dark:focus:ring-pink-800 shadow-lg shadow-pink-500/50 dark:shadow-lg dark:shadow-pink-800/80 font-medium text-smtext-center">
           <span className="font-bold text-base text-[#ffffff]">{value}%</span>
         </div>
       </div>

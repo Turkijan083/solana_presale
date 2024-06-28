@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { useWallet } from "@solana/wallet-adapter-react";
 
 export default function Header() {
+
   const { select, wallets, publicKey, disconnect } = useWallet();
 
   const onWalletConnect = () => {
@@ -19,7 +20,7 @@ export default function Header() {
       disconnect();
     }
   };
-
+  
   return (
     <div className="flex flex-row justify-center">
       <div className="w-full max-w-[1440px] px-5 py-9 relative">
@@ -34,8 +35,9 @@ export default function Header() {
             </span>
           </div>
         </div>
-        {/* <div className="absolute top-0 flex flex-row items-center h-full right-5">
-          <button
+      </div>
+
+      <button
             onClick={onWalletConnect}
             className="px-5 py-2 bg-[#d00711] rounded-full text-[#eff3f6] font-inter text-sm font-bold"
           >
@@ -45,8 +47,6 @@ export default function Header() {
                 " ... " +
                 publicKey.toBase58().slice(-6)}
           </button>
-            </div> */}
-      </div>
     </div>
   );
 }

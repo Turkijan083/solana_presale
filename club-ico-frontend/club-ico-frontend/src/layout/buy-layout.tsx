@@ -2,18 +2,55 @@ import { Icon, IconType } from "@/components/icons";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import usePresale from "@/hooks/usePresale";
-import StatsLayout from "@/layout/stats-layout";
-import { useWallet } from "@solana/wallet-adapter-react";
-
 import {
   BUYER_HARDCAP,
   BUYER_SOFTCAP,
   BUYER_TOKEN_HARDCAP,
-  PRICE_PER_TOKEN,
+  price_data,
   TOKEN_DECIMAL,
 } from "@/constants/constants";
 
+import {
+  TOKEN_PRICE1,
+  TOKEN_PRICE2,
+  TOKEN_PRICE3,
+  TOKEN_PRICE4,
+  TOKEN_PRICE5,
+} from "@/constants/constants";
+
+import axios from 'axios';
+
+interface PriceResponse {
+  solana: {
+    usd: number;
+  };
+}
+
+
 export default function BuyLayout() {
+  const [price, setPrice] = useState<number | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchPrice = async () => {
+    try {
+      const response = await axios.get<PriceResponse>(
+        'https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd'
+      );
+      setPrice(response.data.solana.usd);
+      setLoading(false);
+    } catch (err) {
+      setError((err as Error).message);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPrice();
+    const interval = setInterval(fetchPrice, 60000); // Fetch price every 60 seconds
+    return () => clearInterval(interval); // Clean up the interval on component unmount
+  }, []);
+
   const { buyToken, transactionPending, startTime, endTime, buyAmount } =
     usePresale();
   const [canBuy, setCanBuy] = useState(true);
@@ -39,48 +76,11 @@ export default function BuyLayout() {
       toast.warning("Please check SOL balance again.");
       return;
     }
-    buyToken(solBalance, solBalance / PRICE_PER_TOKEN);
+    buyToken(solBalance, Math.round((solBalance * (price?.valueOf()?? 0) / price_data.PRICE_PER_TOKEN) * 1000) / 1000);
   };
 
-  const { select , wallets , publicKey, disconnect } = useWallet();
-
-  const onWalletConnect = () => {
-     if ( !publicKey ) {
-        const installedWallets = wallets.filter(
-            (wallet) => wallet.readyState === "Installed"
-        );
-        if ( installedWallets.length <= 0) {
-          toast.warning("Phantom wallet is not installed yet.");
-          return;
-        }
-        select(wallets[0].adapter.name);
-     } else {
-        disconnect();
-     }
-  }
-
   return (
-    
-
-    <div className="w-full h-[800px] sm:h-120 max-w-[700px] rounded-3xl bg-[#dae3eaa0] px-8 sm:px-12 py-8 flex flex-col gap-1 sm:gap-2">
-      <span className="font-inter font-bold text-[#000000] text-sm sm:text-lg text-left text-gradient-title" style={{fontSize: '20px !important'}}>
-        Testnet 
-      </span>
-
-      <span className="font-inter font-bold text-[#000000] text-3xl sm:text-lg text-center text-gradient-title" style={{fontSize: '30px !important'}}>
-        Miron Presale 
-      </span>
-
-      <span className="font-inter font-bold text-[#000000] text-sm sm:text-lg text-center text-gradient-stage-title" style={{fontSize: '25px !important'}}>
-        Stage 1
-      </span>
-
-      <StatsLayout />
-
-      <span className="font-inter font-bold text-[#000000] text-sm sm:text-lg">
-        Please enter Miron Amount
-      </span>
-
+    <div className="w-full max-w-[700px] rounded-3xl  px-8 sm:px-12 flex flex-col gap-3">
       <div className="flex flex-col items-center gap-2 sm:flex-row">
         <div className="h-32 rounded-[20px] bg-[#e6f1fa] flex flex-col justify-between px-5 py-5 shadow-[0_0_50px_0_#00000010]">
           <div className="font-inter text-sm text-[#000000] flex flex-row items-center justify-between">
@@ -115,10 +115,16 @@ export default function BuyLayout() {
         <div className="h-32 rounded-[20px] bg-[#e6f1fa] flex flex-col justify-between px-5 py-5 shadow-[0_0_50px_0_#00000010]">
           <div className="font-inter text-sm text-[#000000] flex flex-row items-center justify-between">
             <span className="font-bold">To</span>
+            <span className = "px-2 py-1 text-xl flex justify-center font-bold text-gradient-title">
+              1 MIRON = {(price_data.PRICE_PER_TOKEN*100).toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 4,
+              })}{"¢"}
+            </span>
           </div>
           <div className="flex flex-row items-center justify-between">
             <input
-              value={solBalance / PRICE_PER_TOKEN}
+              value={solBalance * ((price?.valueOf()?? 0)  / price_data.PRICE_PER_TOKEN)}
               className="w-full h-10 outline-none px-2 font-inter font-bold text-[#000000] text-xl bg-transparent"
             />
             <div className="w-40 h-10 px-2 py-1 flex flex-row items-center justify-between rounded-full bg-[#c1cfd7]">
@@ -130,47 +136,40 @@ export default function BuyLayout() {
           </div>
         </div>
       </div>
-      {/* <div className="flex flex-col items-center font-inter font-normal text-[#000000] text-xs sm:text-sm">
-        <span className="text-center">
-          CLUB remaining for your wallet limit:{" "}
-          {remainBuyAmount.toLocaleString(undefined, {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 4,
-          })}{" "}
-          (
-          {(remainBuyAmount * PRICE_PER_TOKEN).toLocaleString(undefined, {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 4,
-          })}{" "}
-          SOL)
-        </span>
-        <span className="text-center">
-          Minimum Per Transaction is {BUYER_SOFTCAP} SOL, Maximum For Presale is{" "}
-          {BUYER_HARDCAP} SOL
-        </span>
+      <div className = "flex flex-row items-center">
+        <div className="flex flex-col items-center font-inter font-normal text-[#000000] text-xs sm:text-sm">
+          <span className="text-center">
+            Miron remaining for your wallet limit:{" "}
+            {remainBuyAmount.toLocaleString(undefined, {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 4,
+            })}{" "}
+            (
+            {(remainBuyAmount * price_data.PRICE_PER_TOKEN).toLocaleString(undefined, {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 4,
+            })}{" "}
+            SOL)
+          </span>
+          <span className="text-center">
+            Minimum Per Transaction is {BUYER_SOFTCAP} SOL, Maximum For Presale is{" "}
+            {BUYER_HARDCAP} SOL
+          </span>
+        </div>
+        <div className="flex flex-row justify-center">
+          {/* {canBuy && !transactionPending && ( */}
+            <button
+              className={`px-5 py-2 bg-[#d00711] rounded-full text-[#eff3f6] font-inter text-3xl font-bold text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 px-5 py-2.5 text-center me-2 mb-2`}
+              onClick={onBuyToken}
+            >
+              BUY
+            </button>
+          {/* )} */}
+          {transactionPending && (
+            <Icon type={IconType.LOADING} className="w-14 h-14" />
+          )}
+        </div>
       </div>
-      <div className="flex flex-row justify-center">
-        {canBuy && !transactionPending && (
-          <button
-            className={`px-5 py-2 bg-[#d00711] rounded-full text-[#eff3f6] font-inter text-sm font-bold`}
-            onClick={onBuyToken}
-          >
-            BUY CLUB
-          </button>
-        )}
-        {transactionPending && (
-          <Icon type={IconType.LOADING} className="w-14 h-14" />
-        )}
-      </div> */}
-      <button
-        onClick = {onWalletConnect}
-        className= "px-5 py-2 bg-[#d00711] rounded-full text-[#eff3f6] font-inter text-sm font-bold" >
-            {!publicKey
-            ? "CONNECT WALLET"
-            : publicKey.toBase58().slice(0, 6) + 
-            " ... " +
-            publicKey.toBase58().slice(-6)}
-        </button>
     </div>
   );
 }
