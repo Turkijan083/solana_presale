@@ -159,7 +159,7 @@ export default function BuyLayout() {
         <div className="flex flex-row justify-center">
           {/* {canBuy && !transactionPending && ( */}
             <button
-              className={`px-5 py-2 bg-[#d00711] rounded-full text-[#eff3f6] font-inter text-3xl font-bold text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 px-5 py-2.5 text-center me-2 mb-2`}
+              className={`px-5 py-2 bg-[#d00711] rounded-full text-[#eff3f6] font-inter text-3xl font-bold text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50 dark:shadow-lg dark:shadow-cyan-800/80 font-medium rounded-lg focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 px-5 py-2.5 text-center me-2 mb-2`}
               onClick={onBuyToken}
             >
               BUY
